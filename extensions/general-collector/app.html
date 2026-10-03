@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="sr-version" content="0.1.12">
+<title>生参取数 · 工作台</title>
+<style>
+:root{--green:#177655;--green-soft:#e6f0e9;--ink:#202c29;--muted:#74807b;--line:#e4e9e6;--bg:#e9eeeb;
+--warn:#b26a00;--warn-bg:#fff6e5;--err:#b3261e;--err-bg:#fdecea;--ok:#177655;--ok-bg:#e8f4ee}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px 'Microsoft YaHei',-apple-system,'Segoe UI',sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:#fff;color:inherit;border-radius:6px;padding:9px 13px}
+button:hover:not(:disabled){background:#f0f5f2}
+button:disabled{cursor:not-allowed;opacity:.45}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #80bca5;outline-offset:2px}
+button.primary{background:var(--green);border-color:var(--green);color:#fff}
+button.primary:hover:not(:disabled){background:#125f45}
+button.ghost{border-color:transparent;background:transparent;color:var(--green);padding:6px 8px}
+button.link{border:0;background:transparent;color:var(--green);padding:5px 8px;text-decoration:underline}
+input[type=text],input[type=date],input[type=number],select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:#fff}
+textarea{min-height:64px;resize:vertical;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+header{height:72px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#fff}
+.brand{display:flex;align-items:center;gap:12px;font-size:18px;font-weight:700}
+.mark{display:grid;place-items:center;background:var(--green);color:#fff;width:34px;height:34px;border-radius:8px;font-size:21px}
+.tag{font-size:11px;font-weight:400;color:#9b6b23;background:var(--warn-bg);padding:4px 7px;border-radius:4px}
+.tag.ok{color:var(--green);background:var(--ok-bg)}
+.shell{max-width:1180px;margin:30px auto;background:#fff;min-height:820px;display:grid;grid-template-columns:190px 1fr;border:1px solid #dce3de;box-shadow:0 16px 48px #243e3010}
+.rail{background:#f8faf8;border-right:1px solid var(--line);padding:26px 16px;display:flex;flex-direction:column;gap:8px}
+.rail small{color:var(--muted);padding:0 12px;margin-bottom:18px;font-size:11px;letter-spacing:2px}
+.nav{display:flex;gap:12px;align-items:center;border:0;text-align:left;padding:13px;background:transparent}
+.nav.active{background:var(--green-soft);color:var(--green);font-weight:700}
+.rail footer{margin-top:auto;padding:20px 12px;color:var(--muted);font-size:12px;line-height:1.9}
+.dot{display:inline-block;width:6px;height:6px;background:var(--green);border-radius:50%;margin-right:7px}
+main{min-width:0;display:flex;flex-direction:column}
+.top{padding:27px 32px 18px;display:flex;align-items:center;justify-content:space-between}
+.top h1{font-size:23px;margin:0 0 6px}
+.sub{font-size:12.5px;color:var(--muted)}
+.content{padding:0 32px 30px;flex:1}
+.page{display:none}
+.page.active{display:block}
+.quiet{color:var(--muted);font-size:12.5px}
+.section{border-top:1px solid var(--line);padding:22px 0}
+.section:first-of-type{border-top:0}
+.section h2{font-size:16px;margin:0 0 14px;display:flex;align-items:center;gap:9px}
+.section h2 span{font:11px/1 ui-monospace,monospace;color:var(--muted);background:#f2f5f3;border-radius:4px;padding:4px 6px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.field{flex:1;min-width:140px}
+.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px}
+.store{display:flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:10px;padding:16px;background:#fbfdfc}
+.avatar{width:42px;height:42px;border-radius:10px;background:var(--green);color:#fff;display:grid;place-items:center;font-size:18px;font-weight:700}
+.store div strong{display:block;font-size:15px}
+.segmented,.segments{display:flex;gap:6px;background:#f2f5f3;border:1px solid var(--line);border-radius:8px;padding:5px;flex-wrap:wrap}
+.segmented button,.segments button{border:0;background:transparent;padding:9px 14px;border-radius:6px}
+.segmented button.active,.segments button.active{background:#fff;box-shadow:0 1px 3px #243e3020;font-weight:700;color:var(--green)}
+.presets{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.dimtools{display:flex;gap:10px;align-items:center;margin:14px 0 10px}
+.dims{border:1px solid var(--line);border-radius:8px;max-height:300px;overflow:auto}
+.dim{display:flex;gap:10px;align-items:center;padding:9px 13px;border-bottom:1px solid #f1f4f2}
+.dim:last-child{border-bottom:0}
+.dim.disabled{opacity:.5}
+.dim input{width:auto}
+.dim em{margin-left:auto;font-style:normal;font-size:11.5px;color:var(--warn);background:var(--warn-bg);border-radius:4px;padding:3px 6px}
+.dim .mc{margin-left:auto;font-size:11.5px;color:var(--muted)}
+.dim .mc.unknown{color:var(--warn)}
+.summary{display:flex;align-items:center;gap:14px;justify-content:space-between;border-top:1px solid var(--line);
+padding:18px 0 0;margin-top:20px;flex-wrap:wrap}
+.hint{font-size:12.5px;color:var(--muted);line-height:1.75}
+.hint code{background:#f2f5f3;padding:1px 5px;border-radius:4px;font-family:ui-monospace,Consolas,monospace}
+.note{border-radius:8px;padding:11px 13px;font-size:12.5px;line-height:1.7;margin-top:10px}
+.note.warn{background:var(--warn-bg);color:#7a4a00;border:1px solid #f0dcb8}
+.note.err{background:var(--err-bg);color:var(--err);border:1px solid #f3c9c5}
+.note.ok{background:var(--ok-bg);color:var(--green);border:1px solid #c9e3d7}
+.bar{height:10px;border-radius:6px;background:#eef2f0;overflow:hidden;margin:14px 0 16px}
+.bar i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tile{border:1px solid var(--line);border-radius:9px;padding:13px;text-align:center;background:#fbfdfc}
+.tile b{display:block;font-size:23px}
+.tile span{font-size:12px;color:var(--muted)}
+.tile.failed b{color:var(--err)}
+.tile.gap b{color:var(--warn)}
+.kv{display:flex;gap:12px;padding:7px 0;border-bottom:1px dashed #eef2f0;font-size:13px}
+.kv span:first-child{color:var(--muted);min-width:96px}
+.kv span:last-child{word-break:break-all}
+.gap-list{max-height:190px;overflow:auto;font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#7a4a00;margin-top:8px}
+/* 取数队列（2026-09-18）：一行一项，序号 + 标签 + 状态 + 操作 */
+.queue{margin-top:6px;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.qrow{display:grid;grid-template-columns:24px 34px minmax(0,1fr) 96px minmax(108px,180px);gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid #f1f4f2;font-size:12.5px}
+.qrow:last-child{border-bottom:0}
+.qrow.readonly{grid-template-columns:34px minmax(0,1fr) 140px}
+.qrow.readonly .note{grid-column:2 / -1}
+.qrow .pick{display:flex;align-items:center;justify-content:center}
+.qrow .pick input{width:16px;height:16px;margin:0}
+.qrow .seq{color:var(--muted);font-weight:700;text-align:center}
+.qrow .lab{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qrow .st{font-weight:700;font-size:12px}
+.qrow .st.pending{color:var(--muted)}
+.qrow .st.running{color:var(--green)}
+.qrow .st.done{color:var(--green)}
+.qrow .st.failed{color:var(--err)}
+.qrow .act{display:flex;gap:4px;justify-content:flex-end}
+.qrow .act button{padding:3px 7px;font-size:11.5px;border-radius:6px}
+.qrow .note{grid-column:3 / -1;color:var(--warn);font-size:11.5px;margin-top:-2px}
+.qempty{padding:12px;color:var(--muted);font-size:12.5px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding:18px 32px;background:#fbfdfc}
+.history{border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.hrow{display:grid;grid-template-columns:1.4fr 1.6fr 1fr 0.8fr 1fr;gap:10px;padding:11px 14px;border-bottom:1px solid #f1f4f2;font-size:12.5px;align-items:center}
+.hrow.head{background:#f8faf8;color:var(--muted);font-size:11.5px;letter-spacing:.5px}
+.hrow:last-child{border-bottom:0}
+.hrow .st{font-weight:700}
+.hrow .st.completed{color:var(--green)}
+.hrow .st.error,.hrow .st.ended{color:var(--warn)}
+.banner{display:none;padding:10px 32px;background:var(--err-bg);color:var(--err);font-size:12.5px}
+.banner.show{display:block}
+#msg{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);max-width:70vw;padding:12px 18px;border-radius:8px;
+background:#202c29;color:#fff;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9}
+#msg.show{opacity:1}
+#msg.err{background:#8c1d18}
+#msg.ok{background:var(--green)}
+dialog{border:0;border-radius:12px;padding:24px;max-width:560px;box-shadow:0 24px 64px #243e3030}
+dialog::backdrop{background:#202c2960}
+details{border:1px solid var(--line);border-radius:9px;padding:0 14px;background:#fbfdfc}
+details>summary{cursor:pointer;padding:13px 0;font-weight:700;font-size:13.5px}
+details[open]>summary{border-bottom:1px solid var(--line);margin-bottom:14px}
+details .inner{padding-bottom:16px}
+@media (max-width:900px){.shell{grid-template-columns:1fr}.rail{flex-direction:row;align-items:center}.rail small,.rail footer{display:none}.tiles{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="mark">↗</span>生参取数 <span class="tag" id="modeTag">工作台</span></div>
+  <div class="row">
+    <span class="quiet" id="versionLine">v…</span>
+    <span class="quiet" id="handshakeLine"></span>
+  </div>
+</header>
+<div class="banner" id="lockBanner"></div>
+
+<div class="shell">
+  <aside class="rail">
+    <small>WORKSPACE</small>
+    <button class="nav active" data-page="new"><span>＋</span>新建取数</button>
+    <button class="nav" data-page="progress"><span>◷</span>任务进度</button>
+    <button class="nav" data-page="history"><span>↶</span>历史记录</button>
+    <footer>
+      <span class="dot"></span>本地界面 · 未连接平台<br>
+      配置 → 加入队列 → 开始队列
+    </footer>
+  </aside>
+
+  <main>
+    <div class="top">
+      <div>
+        <h1 id="title">新建取数</h1>
+        <div class="sub" id="subtitle">配置本次需要留存的数据</div>
+      </div>
+      <span class="quiet" id="dateLabel">工作空间</span>
+    </div>
+
+    <div class="content">
+      <!-- ============================ 新建取数 ============================ -->
+      <section class="page active" id="page-new">
+        <div class="store">
+          <div class="avatar" id="storeAvatar">店</div>
+          <div style="flex:1">
+            <strong id="storeName">未读取店铺</strong>
+            <span class="quiet" id="storeHint">先核验店铺；没有识别到店铺 ID 时，可在高级设置中填写</span>
+          </div>
+          <div class="row">
+            <button id="btnReadStore">↻ 核验当前页</button>
+            <button id="btnPreflight" title="检查取数表单、登录状态与必填项">检查取数环境</button>
+            <button id="btnReconnect" title="刷新目标生参页，恢复扩展页面脚本连接；页面未提交内容会重置">修复连接</button>
+          </div>
+        </div>
+        <div class="hint" style="margin-top:8px">目标标签页：<b id="tabState">未检测</b> <select id="tabSelect" style="width:auto;display:none;margin-left:8px"></select></div>
+        <div class="hint" id="preflightHint" aria-live="polite"></div>
+
+        <div class="section">
+          <h2>取数日期 <span>01</span></h2>
+          <div class="row">
+            <div class="field"><label for="startDate">开始日期</label><input type="date" id="startDate"></div>
+            <span class="quiet">—</span>
+            <div class="field"><label for="endDate">结束日期</label><input type="date" id="endDate"></div>
+          </div>
+          <div class="presets">
+            <button class="link" data-range="available">前天（最新可取日）</button>
+            <button class="link" data-range="week">最近 7 个可取日</button>
+            <button class="link" data-range="month">上个自然月</button>
+          </div>
+          <div class="presets">
+            <button class="link" id="btnYear2024">加入 2024 年全部可取任务</button>
+            <button class="link" id="btnYear2025">加入 2025 年全部可取任务</button>
+          </div>
+          <div class="hint">按人工核验的时间表逐个维度计算起点；点击只加入队列，确认队列后点「开始队列」。跨年周按平台周号所属年份归档。</div>
+          <div class="hint" style="margin-top:6px">平台只提供 <b>T+2</b> 的数据：结束日期不要晚于「前天」。</div>
+        </div>
+
+        <div class="section">
+          <h2>数据范围 <span>02</span></h2>
+          <div class="segments" id="scope"></div>
+          <div class="row" style="margin-top:16px">
+            <label class="quiet" for="timeGrainSelect">统计粒度</label>
+            <select id="timeGrainSelect" style="width:auto;flex:1"></select>
+            <span class="hint" id="grainHint"></span>
+          </div>
+          <div class="dimtools">
+            <input type="text" id="dimSearch" placeholder="搜索数据维度" aria-label="搜索数据维度">
+            <button class="link" id="btnAllDims">全选</button>
+            <button class="link" id="btnNoDims">清空</button>
+            <span class="hint" id="dimCount"></span>
+          </div>
+          <div class="dims" id="dimList"></div>
+        </div>
+
+        <div class="section">
+          <h2>高级设置 <span>03</span></h2>
+          <details id="advanced">
+            <summary>店铺 ID / 批次 / 额外筛选 / 分片与限速（点开）</summary>
+            <div class="inner">
+              <div class="grid3">
+                <div><label class="quiet" for="storeIdInput">店铺 ID（必填）</label><input type="text" id="storeIdInput" placeholder="请核验当前页面后自动读取"></div>
+                <div><label class="quiet" for="batchInput">批次号（可选）</label><input type="text" id="batchInput" placeholder="如 B01"></div>
+                <div><label class="quiet" for="chunkSelect">分片单位</label>
+                  <select id="chunkSelect">
+                    <option value="">自动（推荐）</option>
+                    <option value="month">按自然月</option>
+                    <option value="week">按周（周一~周日）</option>
+                    <option value="day">按天（最细）</option>
+                    <option value="none">不切（整段一片）</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid2" style="margin-top:12px">
+                <div><label class="quiet" for="intervalInput">任务固定间隔（毫秒）</label><input type="number" id="intervalInput" min="1000" step="500"></div>
+                <div><label class="quiet" for="timeoutInput">单任务超时（秒）</label><input type="number" id="timeoutInput" min="30" step="30"></div>
+              </div>
+              <div class="hint" style="margin-top:8px">
+                自动 = 按「维度 × 时间粒度」逐维度决定：分周→按周；<b>行数风险高的明细维度</b>（如「流量来源详情」，实测整月分日导出被平台截断在 10 万行）分日→按周；其余→按自然月。
+              </div>
+              <div style="margin-top:14px">
+                <label class="quiet" for="efvInput">额外筛选值（可选；不填则用平台默认值）</label>
+                <textarea id="efvInput" placeholder="关键词.分词类型=长尾词&#10;流量来源.转化效果归属=全部"></textarea>
+                <div class="hint" style="margin-top:6px">
+                  语法 <code>维度.控件=值</code>，多条用 <code>；</code> 或换行分隔，多选取值用 <code>+</code> 连接，<code>*.控件=值</code> 对所有维度生效。<br>
+                  ⚠️ 控件是<b>按时间粒度</b>变的（例：品类/整体 的分日/分周/分月有「终端类型+类目」，<b>汇总只有「类目」</b>）；
+                  写错的维度/控件会在「加入队列」前被拒绝，不会静默忽略。<span id="efvHint"></span>
+                </div>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <div class="section">
+          <h2>计划预览 <span>04</span></h2>
+          <div class="hint" id="planHint">—</div>
+          <div class="kv"><span>报表名（第 1 个任务）</span><span id="reportNameHint">—</span></div>
+          <div class="kv"><span>归档</span><span class="quiet">…\生参取数\&lt;店铺&gt;\&lt;数据粒度&gt;\&lt;维度&gt;\&lt;时间粒度&gt;\&lt;起止&gt;\&lt;文件&gt;.xlsx</span></div>
+          <div class="note warn">
+            ⚠ 执行期间<b>不要切换到其他标签页，也不要把窗口最小化</b>：插件会在每个任务前把「生参取数页」置于前台并聚焦窗口。
+            若它不在前台，平台的日期面板会卡住（动画被浏览器暂停），任务无法完成。
+          </div>
+        </div>
+
+        <div class="summary">
+          <div>
+            <strong id="selectionSummary">尚未选择维度</strong>
+            <div class="quiet" id="rangeSummary"></div>
+          </div>
+          <div class="row">
+            <button id="btnOpenPage">打开取数页</button>
+            <button id="btnQueueAdd" class="primary">加入队列</button>
+          </div>
+        </div>
+
+        <!-- 取数队列（2026-09-18）：把多份配置排成队，按加入顺序依次执行 -->
+        <div class="section" id="queueSection">
+          <h2>取数队列 <span>05</span></h2>
+          <div class="hint">先将配置加入队列，核对计划后统一开始；一项计划可以包含多份报表。</div>
+          <div class="hint" id="queueSummary">队列为空：设好参数后点「加入队列」，可加多条再点「开始队列」</div>
+          <div class="row" style="margin:8px 0">
+            <button id="btnQueueRun" class="primary">开始队列</button>
+            <button id="btnQueueStop" title="只停止后续队列；当前任务请用旁边的暂停按钮">停止后续队列</button>
+            <button id="btnQueuePause">暂停当前任务</button>
+            <button id="btnQueueResume">继续当前任务</button>
+            <button id="btnQueueClear" title="只移除成功计划记录，保留失败计划和已下载文件">清理成功记录</button>
+          </div>
+          <div class="row" style="margin:8px 0">
+            <button data-qbulk="all">全选可删</button>
+            <button data-qbulk="clear">清空选择</button>
+            <button data-qbulk="remove">删除选中</button>
+            <span class="hint" data-qcount>已选 0 项</span>
+          </div>
+          <div id="queueList" class="queue"></div>
+          <div class="hint" id="queueHint">暂停当前任务：当前一份报表完成后停止，保留进度；继续后从剩余任务接着取。停止后续队列：当前组继续，结束后不再启动下一组。</div>
+        </div>
+      </section>
+
+      <!-- ============================ 任务进度 ============================ -->
+      <section class="page" id="page-progress">
+        <div class="section">
+          <h2>会话状态 <span>05</span></h2>
+          <div class="row" style="justify-content:space-between">
+            <div>
+              <strong id="sessionStatus">无会话</strong>
+              <span class="quiet" id="sessionId"></span>
+              <div class="quiet" id="sessionRange"></div>
+            </div>
+            <div class="row">
+              <button id="btnRefresh">刷新状态</button>
+              <button id="btnPause">暂停当前任务</button>
+              <button id="btnResume">继续当前任务</button>
+              <button id="btnRetry" title="先暂停并等待当前报表结束，再重试本会话中的失败报表；已成功的不会重跑">重试当前失败报表</button>
+              <button id="btnEnd" title="结束当前会话，剩余任务记为缺口；不能用继续按钮恢复">结束当前会话</button>
+              <button id="btnDiag">导出诊断</button>
+            </div>
+          </div>
+          <div class="bar"><i id="progressBar"></i></div>
+          <div class="tiles">
+            <div class="tile"><b id="cDone">0</b><span>已完成</span></div>
+            <div class="tile failed"><b id="cFailed">0</b><span>失败</span></div>
+            <div class="tile"><b id="cPending">0</b><span>待处理</span></div>
+            <div class="tile gap"><b id="cGap">0</b><span>缺口</span></div>
+          </div>
+          <div class="kv" style="margin-top:14px"><span>当前任务</span><span id="curTask">—</span></div>
+          <div class="kv"><span>上次错误</span><span id="lastError">—</span></div>
+          <div class="kv"><span>会话参数</span><span id="sessionParams" class="quiet">—</span></div>
+          <div class="gap-list" id="gapList"></div>
+        </div>
+
+        <!-- 队列状态（与"新建取数"页的队列面板同一份数据，这里只看进度） -->
+        <div class="section">
+          <h2>队列进度 <span>06</span></h2>
+          <div class="hint" id="queueSummary2">队列为空</div>
+          <div class="row" style="margin:8px 0"><button id="btnManageQueue">管理队列</button><span class="hint">此处查看进度；添加、重排、重跑和清理在队列区操作。</span></div>
+          <div id="queueList2" class="queue"></div>
+        </div>
+      </section>
+
+      <!-- ============================ 历史记录 ============================ -->
+      <section class="page" id="page-history">
+        <div class="section">
+          <h2>历史会话 <span>06</span></h2>
+          <div class="row" style="justify-content:space-between">
+            <span class="hint">数据来自本机扩展存储的<b>会话索引</b>（最近 50 条；与归档目录里的 <code>session_manifest.json</code> 同一批事实）。</span>
+            <button id="btnReloadHistory">刷新</button>
+          </div>
+          <div class="history" style="margin-top:12px">
+            <div class="hrow head"><span>会话</span><span>区间</span><span>粒度</span><span>任务数</span><span>状态</span></div>
+            <div id="historyList"></div>
+          </div>
+          <div class="hint" id="historyEmpty" style="margin-top:10px">—</div>
+        </div>
+      </section>
+    </div>
+
+    <div class="toolbar">
+      <span class="hint grow" id="statusLine">正在连接后台…</span>
+    </div>
+  </main>
+</div>
+
+<div id="msg"></div>
+<dialog id="dialog">
+  <h3 id="dialogTitle" style="margin-top:0">提示</h3>
+  <p id="dialogBody" style="line-height:1.8"></p>
+  <div class="row" style="justify-content:flex-end"><button id="closeDialog">知道了</button></div>
+</dialog>
+
+<script src="selectors.js"></script>
+<script src="availability.js"></script>
+<script src="core.js"></script>
+<script src="ui-core.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

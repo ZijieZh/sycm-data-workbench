@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>竞店流失取数</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>竞店流失取数</h1>
+      <p>在已登录的竞店流失“日”页面使用</p>
+    </header>
+
+    <section class="status-card">
+      <div><span>页面</span><strong id="page-status">检查中</strong></div>
+      <div><span>日期</span><strong id="date-value">—</strong></div>
+      <div><span>状态</span><strong id="run-status">未开始</strong></div>
+      <div><span>进度</span><strong id="progress-value">0 家 / 0 件商品</strong></div>
+    </section>
+
+    <div class="date-grid">
+      <label for="start-date">开始日期<input id="start-date" type="date"></label>
+      <label for="end-date">结束日期<input id="end-date" type="date"></label>
+    </div>
+
+    <label class="delay-label" for="delay-ms">逐店等待时间</label>
+    <select id="delay-ms">
+      <option value="500">500 ms（页面响应快）</option>
+      <option value="700" selected>700 ms（推荐）</option>
+      <option value="1000">1000 ms（更稳）</option>
+      <option value="1500">1500 ms（网络较慢）</option>
+    </select>
+
+    <div class="button-row">
+      <button id="start-button" class="primary">开始采集日期范围</button>
+      <button id="stop-button">暂停</button>
+      <button id="end-button" class="danger">结束</button>
+    </div>
+
+    <div class="export-grid">
+      <button id="previous-button">查看 / 导出上一轮结果</button>
+      <button id="export-stores">导出店铺 CSV</button>
+      <button id="export-products">导出商品 CSV</button>
+      <button id="export-combined">导出合并明细 CSV</button>
+      <button id="export-layout">导出粘贴版 TSV</button>
+    </div>
+
+    <p class="hint">“暂停”会保留任务并允许继续；“结束”会永久结束本轮并保留部分结果。工具会自动采完每天的所有分页，再切换下一天；单次最多31天。运行期间不要手动切换日期或分页。</p>
+    <pre id="log-view">等待开始</pre>
+  </main>
+  <script src="collector-core.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

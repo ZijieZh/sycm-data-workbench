@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="sr-version" content="0.1.12">
+<title>生参通用取数</title>
+<style>
+:root{--green:#177655;--ink:#202c29;--muted:#74807b;--line:#e4e9e6;--warn:#b26a00;--err:#b3261e}
+*{box-sizing:border-box}
+body{width:340px;margin:0;font:13px 'Microsoft YaHei',sans-serif;color:var(--ink);background:#fff}
+header{display:flex;align-items:center;gap:9px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.mark{display:grid;place-items:center;background:var(--green);color:#fff;width:26px;height:26px;border-radius:7px;font-size:16px}
+header strong{flex:1}
+.v{font-size:11.5px;color:var(--muted)}
+.v.bad{color:var(--err);font-weight:700}
+.lock{display:none;padding:9px 14px;background:#fdecea;color:var(--err);font-size:12px;line-height:1.6}
+.lock.show{display:block}
+section{padding:12px 14px;border-bottom:1px solid var(--line)}
+h2{margin:0 0 8px;font-size:12.5px;color:var(--muted);font-weight:400;letter-spacing:.4px}
+.row{display:flex;align-items:center;gap:8px}
+.kv{display:flex;gap:10px;padding:3px 0;font-size:12.5px}
+.kv span:first-child{color:var(--muted);min-width:60px}
+.kv span:last-child{word-break:break-all}
+.bar{height:9px;border-radius:5px;background:#eef2f0;overflow:hidden;margin:9px 0 8px}
+.bar i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.tile{border:1px solid var(--line);border-radius:7px;padding:7px;text-align:center;background:#fbfdfc}
+.tile b{display:block;font-size:16px}
+.tile span{font-size:11px;color:var(--muted)}
+.tile.failed b{color:var(--err)}
+.tile.gap b{color:var(--warn)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:6px;padding:9px 11px}
+button:hover:not(:disabled){background:#f0f5f2}
+button:disabled{cursor:not-allowed;opacity:.45}
+button.primary{background:var(--green);border-color:var(--green);color:#fff;width:100%}
+button.primary:hover:not(:disabled){background:#125f45}
+button.big{flex:1}
+.msg{display:none;padding:9px 14px;font-size:12px;line-height:1.6}
+.msg.show{display:block}
+.msg.info{background:#eef4f1;color:var(--ink)}
+.msg.ok{background:#e8f4ee;color:var(--green)}
+.msg.err{background:#fdecea;color:var(--err)}
+.hint{font-size:11.5px;color:var(--muted);line-height:1.7;margin-top:7px}
+</style>
+</head>
+<body>
+<header>
+  <span class="mark">↗</span>
+  <strong>生参取数</strong>
+  <span class="v" id="versionValue">v…</span>
+</header>
+<div class="lock" id="lockBanner"></div>
+
+<section>
+  <h2>当前店铺</h2>
+  <div class="kv"><span>店铺名</span><span id="storeName">—</span></div>
+  <div class="kv"><span>目标页</span><span id="tabState">未检测</span></div>
+  <div class="row" style="margin-top:8px">
+    <button class="big" id="btnReadStore">核验当前页</button>
+    <button class="big" id="btnPreflight">检查取数环境</button>
+  </div>
+</section>
+
+<section>
+  <h2>会话状态</h2>
+  <div class="row" style="justify-content:space-between">
+    <b id="sessionStatus">无会话</b>
+    <span class="hint" id="sessionRange" style="margin:0"></span>
+  </div>
+  <div class="bar"><i id="progressBar"></i></div>
+  <div class="tiles">
+    <div class="tile"><b id="cDone">0</b><span>完成</span></div>
+    <div class="tile failed"><b id="cFailed">0</b><span>失败</span></div>
+    <div class="tile"><b id="cPending">0</b><span>待处理</span></div>
+    <div class="tile gap"><b id="cGap">0</b><span>缺口</span></div>
+  </div>
+  <div class="row" style="margin-top:9px">
+    <button class="big" id="btnPause" title="当前报表完成后暂停，保留进度">暂停当前任务</button>
+    <button class="big" id="btnResume">继续当前任务</button>
+    <button class="big" id="btnEnd" title="剩余报表记为缺口，结束后不能直接继续">结束当前会话</button>
+  </div>
+</section>
+
+<section>
+  <button class="primary" id="btnWorkspace">打开工作台 →</button>
+  <div class="hint">
+    配置取数参数、看任务进度与历史记录，都在工作台里（配置项多，弹窗放不下）。
+    本弹窗只留常用动作；执行期间<b>不要切换标签页或最小化窗口</b>。
+  </div>
+</section>
+
+<div class="msg" id="msg"></div>
+
+<script src="selectors.js"></script>
+<script src="availability.js"></script>
+<script src="core.js"></script>
+<script src="ui-core.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "生意参谋竞店流失半自动取数",
+  "version": "0.2.6",
+  "description": "按日期范围自动采集生意参谋竞店流失全部分页，并导出店铺、商品数据。",
+  "permissions": ["activeTab", "storage", "scripting"],
+  "host_permissions": ["https://sycm.taobao.com/*"],
+  "action": {
+    "default_title": "竞店流失取数",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://sycm.taobao.com/*"],
+      "js": ["collector-core.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

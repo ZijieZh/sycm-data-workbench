@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "business-duckdb": {
+      "command": "C:\\ABSOLUTE_PATH\\template\\.venv\\Scripts\\python.exe",
+      "args": [
+        "C:\\ABSOLUTE_PATH\\template\\scripts\\mcp_server.py"
+      ],
+      "env": {
+        "BUSINESS_DB_PATH": "C:\\ABSOLUTE_PATH\\template\\db\\business.duckdb"
+      }
+    }
+  }
+}

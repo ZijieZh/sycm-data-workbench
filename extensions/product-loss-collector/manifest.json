@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "生意参谋竞品流失取数",
+  "version": "0.3.5",
+  "description": "按日期范围逐日采集指定或全店商品的浏览和搜索流失竞品推荐明细。",
+  "permissions": ["activeTab", "storage", "unlimitedStorage", "scripting"],
+  "host_permissions": ["https://sycm.taobao.com/*", "https://detail.tmall.com/*", "https://item.taobao.com/*"],
+  "background": {"service_worker": "competitor-background.js"},
+  "action": {
+    "default_title": "竞品流失取数",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://sycm.taobao.com/*"],
+      "js": ["competitor-core.js", "collector-pacing.js", "collector-task-state.js", "competitor-content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

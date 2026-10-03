@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>竞品流失取数</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <div class="eyebrow"><span class="mark"></span> 生意参谋 · 竞品分析</div>
+      <h1>竞品流失取数</h1>
+      <p>按日采集浏览与搜索流失竞品，合并导出一份明细。</p>
+    </header>
+
+    <section class="panel" aria-labelledby="range-title">
+      <div class="section-head"><span class="step">01</span><h2 id="range-title">选择采集日期</h2></div>
+      <div class="date-grid">
+        <label>开始日期<input id="start-date" type="date"></label>
+        <label>结束日期<input id="end-date" type="date"></label>
+      </div>
+      <p class="micro" id="range-summary">含首尾日期，逐日切换页面采集。</p>
+    </section>
+
+    <section class="panel" aria-labelledby="items-title">
+      <div class="section-head"><span class="step">02</span><h2 id="items-title">商品范围</h2></div>
+      <p class="micro">每行一个商品 ID 或完整名称；若同时填写，请用 Tab 分隔。仅精确匹配。留空则采集当前页面的全部商品。</p>
+      <textarea id="items" rows="3" spellcheck="false" placeholder="813906699724&#10;或：商品ID⇥完整商品名称&#10;留空 = 全店商品"></textarea>
+      <div class="item-tools"><label class="upload" for="file">导入 TXT / CSV</label><input id="file" type="file" accept=".txt,.csv,text/plain,text/csv"><span id="item-count">0 个商品</span></div>
+    </section>
+
+    <section class="run-panel" aria-labelledby="run-title">
+      <div class="section-head"><span class="step">03</span><h2 id="run-title">采集与导出</h2></div>
+      <label class="pace-label" for="pace">操作间隔</label>
+      <select id="pace" aria-describedby="pace-hint">
+        <option value="fast">快速：点击/翻页 0.5–1 秒</option>
+        <option value="gentle">舒缓：点击/翻页 2–4 秒</option>
+        <option value="conservative" selected>保守：点击/翻页 4–8 秒</option>
+        <option value="verySlow">更慢：点击/翻页 8–15 秒</option>
+      </select>
+      <p class="micro" id="pace-hint">每次操作在区间内独立取值；切换日期会额外等待。快速档更易触发平台限制，请自行选择。</p>
+      <div class="connection"><span class="dot" id="connection-dot"></span><span id="connection-text">正在检查页面…</span></div>
+      <div class="actions"><button id="start" class="primary">开始采集</button><button id="pause" class="secondary" disabled>暂停任务</button><button id="resume" class="secondary" disabled>继续任务</button><button id="stop" class="secondary" disabled>结束任务</button></div>
+      <p class="micro">结束任务会清空本次结果；如需保留，请先导出 CSV。</p>
+      <div class="progress-head"><strong id="status">未开始</strong><span id="progress-text">0 / 0 项</span></div>
+      <div class="progress-track" role="progressbar" aria-label="采集进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-bar"></div></div>
+      <p class="micro" id="current">日期、商品和推荐类型将在此显示。</p>
+      <button id="export" class="export" disabled>导出合并明细 CSV <span>↗</span></button>
+      <p class="micro" id="export-note">包含日期、推荐类型、商品、竞品和采集状态。</p>
+    </section>
+
+    <details class="diagnostics"><summary>查看采集记录与错误</summary><ol id="log"></ol></details>
+  </main>
+  <script src="competitor-core.js"></script>
+  <script src="collector-task-state.js"></script>
+  <script src="popup-bridge.js"></script>
+  <script src="competitor-popup.js"></script>
+</body>
+</html>

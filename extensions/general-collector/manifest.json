@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "生参通用取数（插件版）",
+  "version": "0.1.12",
+  "description": "跨品牌/跨店铺的生意参谋「自助分析→取数报表→新建取数」半自动取数工具。仅操作页面可见控件，不调用平台内部接口、不读取凭证、不含任何反检测能力。",
+  "permissions": [
+    "storage",
+    "downloads",
+    "alarms",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://sycm.taobao.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "生参通用取数"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://sycm.taobao.com/*"],
+      "js": ["selectors.js", "availability.js", "core.js", "popup-guard.js", "content.js"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ]
+}

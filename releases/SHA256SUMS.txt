@@ -1,0 +1,3 @@
+c4eeb57ae6c14121b515b0a7f6c907280e8fb1068b9c7106c1458876905f1979  sycm-general-collector-v0.1.12.zip
+fa28de56c56f13757228476db2ae8fef0f6cd22e748faf8c0e0b69a088a850a7  sycm-product-loss-v0.3.5.zip
+e7741fb6e63744585e68c34af41870a9e5bf05b92a7aaf7470d6b0de8023446e  sycm-store-loss-v0.2.6.zip
