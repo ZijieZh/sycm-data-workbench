@@ -12,3 +12,5 @@ database-starter/template/db/*.duckdb.wal
 database-starter/template/db/*.tmp
 output/
 temp/
+
+qwen-kit/
